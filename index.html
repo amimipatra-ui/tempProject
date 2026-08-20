@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>cpp_quiz.exe</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,500;0,700;0,800;1,400&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="frame">
+      <div class="titlebar"></div>
+      <div class="terminal">
+        <h1>C++ <span class="accent"></span>Quiz</h1>
+        <div class="subtitle">
+          A short gamified quiz on C++ basics variables, loops, functions, and
+          pointers. Earn points, level up, and see where you land on the board
+          :)
+        </div>
+
+        <div class="screen active" id="screen-start">
+          <div class="stat-strip">
+            <div class="stat-box">
+              <div class="stat-num">10</div>
+              <div class="stat-label">questions</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-num">4</div>
+              <div class="stat-label">topics</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-num">~4</div>
+              <div class="stat-label">min avg</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-num">150</div>
+              <div class="stat-label">max pts</div>
+            </div>
+          </div>
+
+          <label class="field-label">Enter your name</label>
+          <input
+            type="text"
+            id="nameInput"
+            placeholder="e.g. Geet "
+            maxlength="24"
+            autocomplete="off"
+          />
+          <div class="start-actions">
+            <button class="btn btn-primary" id="startBtn">Start quiz →</button>
+          </div>
+
+          <div class="topic-chips">
+            <span class="chip">Variables</span>
+            <span class="chip">Loops</span>
+            <span class="chip">Functions</span>
+            <span class="chip">Pointers</span>
+          </div>
+
+          <div class="rules">
+            <b>How it works</b>
+            <ul>
+              <li>
+                <span class="rule-ico">✓</span>10 questions covering C++ basics
+              </li>
+              <li>
+                <span class="rule-ico">+</span>10 points per correct answer
+              </li>
+              <li>
+                <span class="rule-ico">streak</span>answer 3 in a row correctly
+                for a streak bonus (+5)
+              </li>
+              <li>
+                <span class="rule-ico">lvl</span>every 20 points earns you a
+                level
+              </li>
+              <li>
+                <span class="rule-ico">win</span>your score joins the
+                leaderboard, and you earn a badge based on accuracy
+              </li>
+            </ul>
+          </div>
+
+          <div class="info-box">
+            <div class="info-box-title">Why gamification?</div>
+            <p>
+              Points, levels, and leaderboards tap into the same motivation
+              loops used by Duolingo, Kahoot, and LeetCode instant feedback and
+              visible progress tend to keep learners engaged longer than plain
+              reading. This quiz is a small working example of that idea for the
+              project :3
+            </p>
+          </div>
+        </div>
+
+        <div class="screen" id="screen-quiz">
+          <div class="hud">
+            <div class="hud-item">
+              <span class="k">LVL</span
+              ><span class="v lvl-badge" id="hudLevel">1</span>
+            </div>
+            <div class="hud-item">
+              <span class="k">PTS</span
+              ><span class="v pts-badge" id="hudPoints">0</span>
+            </div>
+            <div class="hud-item">
+              <span class="k">STREAK</span
+              ><span class="v streak-badge" id="hudStreak">0</span>
+            </div>
+            <div class="hud-item">
+              <span class="k">TIME</span
+              ><span class="v time-badge" id="hudTime">0:00</span>
+            </div>
+          </div>
+          <div class="progress-track">
+            <div class="progress-fill" id="progressFill"></div>
+          </div>
+
+          <div class="q-meta">
+            <span class="q-index" id="qIndex">QUESTION 1 / 10</span>
+            <span class="q-topic" id="qTopic">VARIABLES</span>
+            <span class="q-diff" id="qDiff">EASY</span>
+          </div>
+          <div class="q-text" id="qText">Loading...</div>
+          <div class="options" id="qOptions"></div>
+          <div class="feedback" id="feedback"></div>
+          <div class="next-row">
+            <button class="btn btn-primary" id="nextBtn" style="display: none">
+              Next →
+            </button>
+          </div>
+        </div>
+
+        <div class="screen" id="screen-result">
+          <div class="result-big">
+            <div class="result-score" id="finalScore">0</div>
+            <div class="result-label">
+              POINTS SCORED · <span id="finalCorrect">0</span>/10 CORRECT ·
+              <span id="finalAccuracy">0</span>% ACCURACY
+            </div>
+            <div class="result-pills">
+              <div class="result-level" id="finalLevel">LEVEL 1</div>
+              <div class="result-badge" id="finalBadge">BRONZE</div>
+              <div class="result-time" id="finalTime">0:00</div>
+            </div>
+          </div>
+
+          <div class="breakdown">
+            <div class="board-title">Accuracy by Topic</div>
+            <div id="topicBreakdown"></div>
+          </div>
+
+          <div class="board">
+            <div class="board-title">leaderboard (this session)</div>
+            <div id="boardList"></div>
+          </div>
+
+          <div class="result-actions">
+            <button class="btn btn-ghost" id="retryBtn">Try again</button>
+          </div>
+          <div class="foot-note">
+            // scores reset when this page is closed — screenshot the
+            leaderboard to save it
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
