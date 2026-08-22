@@ -192,6 +192,24 @@ input[type="text"]::placeholder {
   color: #cdd6f4;
 }
 
+.input-error {
+  border-color: var(--red) !important;
+  box-shadow: 0 0 0 3px rgba(243, 139, 168, 0.2) !important;
+  animation: shake 0.3s ease;
+}
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-4px);
+  }
+  75% {
+    transform: translateX(4px);
+  }
+}
+
 .btn {
   font-family: "JetBrains Mono", monospace;
   font-weight: 600;

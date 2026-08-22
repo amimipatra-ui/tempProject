@@ -141,7 +141,16 @@ document.getElementById("nameInput").addEventListener("keydown", (e) => {
 });
 
 function startQuiz() {
-  const nameVal = document.getElementById("nameInput").value.trim();
+  const nameInputEl = document.getElementById("nameInput");
+  const nameVal = nameInputEl.value.trim();
+
+  if (!nameVal) {
+    nameInputEl.classList.add("input-error");
+    nameInputEl.placeholder = "Please enter your name to continue";
+    nameInputEl.focus();
+    return;
+  }
+  nameInputEl.classList.remove("input-error");
 
   const topicStats = {};
   TOPICS.forEach((t) => (topicStats[t] = { correct: 0, total: 0 }));
