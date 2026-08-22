@@ -1,3 +1,6 @@
+const LEADERBOARD_API_URL =
+  "https://script.google.com/macros/s/AKfycbw7Jdijskfm63HpFk2OF1FoeUoMYYE5fVT-bK6ti8YEer_-2akw9NeBpcij7EwWGi-ceQ/exec";
+
 const QUESTIONS = [
   {
     q: "What is the correct way to declare an integer variable in C++?",
@@ -108,7 +111,7 @@ let state = {
   topicStats: {},
 };
 
-let leaderboard = [];
+let leaderboard = []; // falls back to local-only if the API call fails
 let timerInterval = null;
 
 const screens = {
@@ -274,14 +277,6 @@ function finishQuiz() {
   const accuracy = Math.round((state.correctCount / QUESTIONS.length) * 100);
   const badge = getBadge(accuracy);
 
-  leaderboard.push({
-    name: state.name,
-    score: state.points,
-    time: state.elapsedSeconds,
-  });
-  leaderboard.sort((a, b) => b.score - a.score);
-  leaderboard = leaderboard.slice(0, 10);
-
   document.getElementById("finalScore").textContent = state.points;
   document.getElementById("finalCorrect").textContent = state.correctCount;
   document.getElementById("finalAccuracy").textContent = accuracy;
@@ -292,8 +287,56 @@ function finishQuiz() {
   );
 
   renderTopicBreakdown();
-  renderLeaderboard();
   showScreen("result");
+
+  submitScoreToServer(accuracy);
+}
+
+function submitScoreToServer(accuracy) {
+  const boardWrap = document.getElementById("boardList");
+  boardWrap.innerHTML =
+    '<div class="board-loading">syncing leaderboard...</div>';
+
+  const payload = {
+    name: state.name,
+    score: state.points,
+    accuracy: accuracy,
+    time: formatTime(state.elapsedSeconds),
+  };
+
+  if (!LEADERBOARD_API_URL || LEADERBOARD_API_URL === "PASTE_YOUR_URL_HERE") {
+    leaderboard.push({ name: state.name, score: state.points });
+    leaderboard.sort((a, b) => b.score - a.score);
+    leaderboard = leaderboard.slice(0, 10);
+    renderLeaderboard();
+    return;
+  }
+
+  fetch(LEADERBOARD_API_URL, {
+    method: "POST",
+    body: JSON.stringify(payload),
+  })
+    .then(() => fetchLeaderboard())
+    .catch(() => {
+      leaderboard = [{ name: state.name, score: state.points }];
+      renderLeaderboard();
+    });
+}
+
+function fetchLeaderboard() {
+  fetch(LEADERBOARD_API_URL)
+    .then((res) => res.json())
+    .then((data) => {
+      leaderboard = (data.leaderboard || []).map((row) => ({
+        name: row.name,
+        score: row.score,
+      }));
+      renderLeaderboard();
+    })
+    .catch(() => {
+      leaderboard = [{ name: state.name, score: state.points }];
+      renderLeaderboard();
+    });
 }
 
 function renderTopicBreakdown() {
